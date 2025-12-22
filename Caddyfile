@@ -5,13 +5,13 @@
     reverse_proxy backopensign.railway.internal:8080
   }
 
-  # Files/PDF -> backend (DO NOT STRIP PATH)
+  # Files/PDF -> backend (keep full path)
   handle /app/files/* {
     reverse_proxy backopensign.railway.internal:8080
   }
 
   # Everything else -> frontend (Vite preview)
   handle {
-    reverse_proxy fe-open-sign.railway.internal:{$FRONTEND_PORT}
+    reverse_proxy fe-open-sign.railway.internal:8080
   }
 }
