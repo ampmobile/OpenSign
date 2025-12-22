@@ -1,10 +1,9 @@
 :{$PORT}
 
 handle_path /api/* {
-  # handle_path automatically strips /api before proxying
-  reverse_proxy OpenSign\ backAPI:8080
+  reverse_proxy backopensign.railway.internal:8080
 }
 
 handle {
-  reverse_proxy front-end-OpenSign:8080
+  reverse_proxy fe-open-sign.railway.internal:3000
 }
