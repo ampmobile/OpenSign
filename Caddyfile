@@ -1,17 +1,28 @@
-:{$PORT} {
+:$PORT {
 
-    # API (strip /api)
-    handle_path /api/* {
-        reverse_proxy opensign-backAPI.railway.internal:8080
-    }
+	# -------------------
+	# API (strip /api)
+	# -------------------
+	handle_path /api/* {
+		reverse_proxy opensign-backAPI.railway.internal:8080
+	}
 
-    # Files / PDFs (DO NOT strip)
-    handle /app/files/* {
-        reverse_proxy opensign-backAPI.railway.internal:8080
-    }
+	# -------------------
+	# PDF / file access (DO NOT STRIP PATH)
+	# -------------------
+	handle /app/files/* {
+		header {
+			Access-Control-Allow-Origin  *
+			Access-Control-Allow-Methods "GET, OPTIONS"
+			Access-Control-Allow-Headers "*"
+		}
+		reverse_proxy opensign-backAPI.railway.internal:8080
+	}
 
-    # Everything else -> frontend
-    handle {
-        reverse_proxy front-end-OpenSign.railway.internal:3000
-    }
+	# -------------------
+	# Everything else → frontend
+	# -------------------
+	handle {
+		reverse_proxy front-end-OpenSign.railway.internal:3000
+	}
 }
