@@ -1,17 +1,16 @@
-:{$PORT} {
+:${PORT} {
 
-    # API -> backend (strip /api)
-    handle_path /api/* {
-        reverse_proxy backopensign.railway.internal:8080
-    }
+  handle_path /api/* {
+    reverse_proxy backopensign.railway.internal:8080
+  }
 
-    # Static / PDF files -> backend (DO NOT strip path)
-    handle /app/files/* {
-        reverse_proxy backopensign.railway.internal:8080
-    }
+  handle /app/files/* {
+    reverse_proxy backopensign.railway.internal:8080
+  }
 
-    # Everything else -> frontend
-    handle {
-        reverse_proxy fe-open-sign.railway.internal:3000
-    }
+  handle {
+    root * /app/build
+    try_files {path} /index.html
+    file_server
+  }
 }
