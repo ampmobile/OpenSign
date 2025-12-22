@@ -55,7 +55,13 @@
     "styled-components": "^5.3.11",
     "web-vitals": "^5.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
- "scripts": {
+
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },"scripts": {
   "version": "curl -s https://api.github.com/repos/opensignlabs/opensign/releases/latest | grep '\"tag_name\":' | awk -F '\"' '{print $4}' > ./public/version.txt",
   "version-win": "powershell -Command \"Invoke-RestMethod -Uri 'https://api.github.com/repos/opensignlabs/opensign/releases/latest' | Select-Object -ExpandProperty tag_name | Out-File -FilePath ./public/version.txt\"",
 
@@ -63,19 +69,14 @@
   "build-win": "npm run version-win && vite build",
 
   "dev": "vite",
-  "start": "vite preview --host 0.0.0.0 --port ${PORT}",
+  "preview": "vite preview",
+  "start": "vite preview --host 0.0.0.0 --port $PORT",
 
   "test": "vitest run",
   "test:watch": "vitest",
   "release": "standard-version",
   "commit": "cz"
 }
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "browserslist": {
     "production": [
       ">0.2%",
