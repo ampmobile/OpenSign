@@ -1,4 +1,4 @@
-:${PORT}
+:{$PORT}
 
 # API → backend (strip /api)
 handle_path /api/* {
