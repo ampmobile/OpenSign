@@ -12,5 +12,5 @@ handle /app/files/* {
 
 # Everything else -> frontend
 handle {
-  reverse_proxy fe-open-sign.railway.internal:3000
+  reverse_proxy fe-open-sign.railway.internal:8000
 }
