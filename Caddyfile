@@ -5,13 +5,10 @@
     reverse_proxy backopensign.railway.internal:8080
   }
 
-  # Files/PDFs -> backend (DO NOT STRIP PATH)
-  # IMPORTANT: /app/files* matches BOTH:
-  # - /app/files
-  # - /app/files/whatever
+  # Files/PDF -> backend (KEEP full path)
   handle /app/files* {
     header {
-      Access-Control-Allow-Origin  *
+      Access-Control-Allow-Origin *
       Access-Control-Allow-Methods "GET, OPTIONS"
       Access-Control-Allow-Headers "*"
     }
