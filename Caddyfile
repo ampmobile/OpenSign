@@ -5,8 +5,8 @@
     reverse_proxy backopensign.railway.internal:8080
   }
 
-  # Files/PDF -> backend (keep full path)
-  handle /app/files/* {
+  # Everything under /app -> backend (NO stripping)
+  handle /app/* {
     reverse_proxy backopensign.railway.internal:8080
   }
 
