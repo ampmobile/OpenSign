@@ -1,17 +1,17 @@
 :{$PORT} {
 
-  # API -> backend service
+  # API -> backend (strip /api)
   handle_path /api/* {
     reverse_proxy opensign-backapi.railway.internal:8080
   }
 
-  # Files/PDF -> backend (no strip)
+  # Files/PDF -> backend (KEEP FULL PATH)
   handle /app/files/* {
     reverse_proxy opensign-backapi.railway.internal:8080
   }
 
-  # Everything else -> local Next.js
+  # Everything else -> frontend Next.js service
   handle {
-    reverse_proxy localhost:3000
+    reverse_proxy frontend-opensign.railway.internal:8080
   }
 }
