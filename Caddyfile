@@ -8,7 +8,7 @@
 	}
 
 	# --------------------
-	# PDF / file access (NO path stripping)
+	# PDF / files (NO strip)
 	# --------------------
 	handle /app/files/* {
 		header {
@@ -20,9 +20,9 @@
 	}
 
 	# --------------------
-	# FRONTEND (same service)
+	# Frontend (Next.js)
 	# --------------------
 	handle {
-		reverse_proxy localhost:3000
+		reverse_proxy front-end-OpenSign.railway.internal:3000
 	}
 }
