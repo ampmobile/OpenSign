@@ -1,9 +1,13 @@
-:{$PORT}
+:${PORT}
 
+# API → backend
 handle_path /api/* {
   reverse_proxy backopensign.railway.internal:8080
 }
 
+# Frontend → static files
 handle {
-  reverse_proxy fe-open-sign.railway.internal:3000
+  root * /app/build
+  try_files {path} /index.html
+  file_server
 }
