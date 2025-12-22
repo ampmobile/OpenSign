@@ -1,6 +1,6 @@
 :{$PORT}
 
-# API -> backend
+# API -> backend (strips /api)
 handle_path /api/* {
   reverse_proxy backopensign.railway.internal:8080
 }
