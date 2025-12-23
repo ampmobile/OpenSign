@@ -3,19 +3,20 @@
   # API -> backend (strip /api)
   handle_path /api/* {
     reverse_proxy backopensign.railway.internal:8080 {
-      # Force backend to treat body as JSON (fixes signPdf 400 when frontend sends text/plain)
+      # IMPORTANT: frontend sends text/plain; Parse expects JSON
       header_up Content-Type "application/json"
 
-      # Keep these sane behind Railway/edge
-      header_up X-Forwarded-Proto {scheme}
+      # keep correct external URL context (optional but good)
+      header_up Host {host}
       header_up X-Forwarded-Host {host}
+      header_up X-Forwarded-Proto {scheme}
     }
   }
 
   # Files/PDF -> backend (KEEP full path)
   handle /app/files* {
     header {
-      Access-Control-Allow-Origin "*"
+      Access-Control-Allow-Origin *
       Access-Control-Allow-Methods "GET, OPTIONS"
       Access-Control-Allow-Headers "*"
     }
