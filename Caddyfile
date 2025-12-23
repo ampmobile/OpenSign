@@ -1,17 +1,14 @@
 :{$PORT} {
 
   # API -> backend (strip /api)
-  handle_path /api/* {
-    reverse_proxy backopensign.railway.internal:8080 {
-      # FRONTEND SENDS text/plain BUT BACKEND EXPECTS JSON
-      header_up Content-Type "application/json"
-
-      # keep external URL context (good behind Railway edge)
-      header_up Host {host}
-      header_up X-Forwarded-Host {host}
-      header_up X-Forwarded-Proto {scheme}
-    }
+handle_path /api/* {
+  reverse_proxy backopensign.railway.internal:8080 {
+    header_up Content-Type "application/json"
+    header_up Host {host}
+    header_up X-Forwarded-Host {host}
+    header_up X-Forwarded-Proto {scheme}
   }
+}
 
   # Files/PDF -> backend (KEEP full path)
   handle /app/files* {
