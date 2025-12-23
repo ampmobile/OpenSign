@@ -1,21 +1,28 @@
 :{$PORT} {
 
-  # API -> backend (strip /api)
+  # --- API -> backend (strip /api) ---
   handle_path /api/* {
-    reverse_proxy backopensign.railway.internal:8080
+    reverse_proxy backopensign.railway.internal:8080 {
+      # Force backend to treat body as JSON (fixes signPdf 400 when frontend sends text/plain)
+      header_up Content-Type "application/json"
+
+      # Good practice when behind Railway/edge
+      header_up X-Forwarded-Proto {scheme}
+      header_up X-Forwarded-Host {host}
+    }
   }
 
-  # Files/PDF -> backend (KEEP full path)
+  # --- Files/PDF -> backend (KEEP full path) ---
   handle /app/files* {
     header {
-      Access-Control-Allow-Origin *
+      Access-Control-Allow-Origin "*"
       Access-Control-Allow-Methods "GET, OPTIONS"
       Access-Control-Allow-Headers "*"
     }
     reverse_proxy backopensign.railway.internal:8080
   }
 
-  # Everything else -> frontend
+  # --- Everything else -> frontend ---
   handle {
     reverse_proxy fe-open-sign.railway.internal:8080
   }
