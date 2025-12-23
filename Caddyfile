@@ -3,10 +3,10 @@
   # API -> backend (strip /api)
   handle_path /api/* {
     reverse_proxy backopensign.railway.internal:8080 {
-      # Fix: frontend sends text/plain but backend expects JSON
+      # Force backend to treat body as JSON (fixes signPdf 400 when frontend sends text/plain)
       header_up Content-Type "application/json"
 
-      # Good practice behind Railway/edge
+      # Keep these sane behind Railway/edge
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-Host {host}
     }
