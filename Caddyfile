@@ -1,25 +1,15 @@
-:${PORT} {
+:8080 {
 
-  # API -> backend (strip /api)
-  handle_path /api/* {
-    reverse_proxy backopensign.railway.internal:8080 {
-      header_up Host {http.request.host}
-      header_up X-Forwarded-Host {http.request.host}
-      header_up X-Forwarded-Proto {http.request.scheme}
-    }
+  @api {
+    path /api/*
   }
+  reverse_proxy @api backopensign.railway.internal:8080
 
-  # Files/PDFs -> backend (DO NOT strip path)
-  handle /app/files* {
-    reverse_proxy backopensign.railway.internal:8080 {
-      header_up Host {http.request.host}
-      header_up X-Forwarded-Host {http.request.host}
-      header_up X-Forwarded-Proto {http.request.scheme}
-    }
+  @files {
+    path /app/files/*
   }
+  reverse_proxy @files backopensign.railway.internal:8080
 
-  # Everything else -> frontend
-  handle {
-    reverse_proxy fe-open-sign.railway.internal:8080
-  }
+  # Everything else = frontend
+  reverse_proxy frontopensign.railway.internal:8080
 }
