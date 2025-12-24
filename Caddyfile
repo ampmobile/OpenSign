@@ -2,14 +2,17 @@
 
 encode gzip
 
-handle_path /api/* {
+# API -> backend (DO NOT STRIP /api)
+handle /api/* {
   reverse_proxy backopensign:8080
 }
 
+# Files -> backend
 handle /files/* {
   reverse_proxy backopensign:8080
 }
 
+# Everything else -> frontend
 handle {
   reverse_proxy front-end-opensign:8080
 }
