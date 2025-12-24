@@ -44,7 +44,10 @@ async function uploadFile(req, res) {
       'xlx',
     ];
 
- 
+    const DO_ENDPOINT = process.env.DO_ENDPOINT;
+    const DO_ACCESS_KEY_ID = process.env.DO_ACCESS_KEY_ID;
+    const DO_SECRET_ACCESS_KEY = process.env.DO_SECRET_ACCESS_KEY;
+    const DO_SPACE = process.env.DO_SPACE;
 
     const parseBaseUrl = cloudServerUrl; //process.env.SERVER_URL;
     const parseAppId = serverAppId;
@@ -70,6 +73,7 @@ async function uploadFile(req, res) {
       });
     } else {
       try {
+        const spacesEndpoint = new aws.Endpoint(DO_ENDPOINT);
         const s3 = new aws.S3({
           endpoint: spacesEndpoint,
           accessKeyId: DO_ACCESS_KEY_ID,
