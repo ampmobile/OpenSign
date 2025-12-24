@@ -1,22 +1,22 @@
 :{$PORT} {
+  # Backend API (DO NOT STRIP /api)
+  handle /api/* {
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+    header Access-Control-Allow-Headers "*"
+    reverse_proxy backopensign.railway.internal:8080
+  }
 
-	# API -> backend (KEEP /api)
-	handle /api/* {
-		reverse_proxy backopensign.railway.internal:8080
-	}
+  # Files endpoint used by the app (DO NOT STRIP /files)
+  handle /files/* {
+    header Access-Control-Allow-Origin "*"
+    header Access-Control-Allow-Methods "GET,OPTIONS"
+    header Access-Control-Allow-Headers "*"
+    reverse_proxy backopensign.railway.internal:8080
+  }
 
-	# Files / PDFs -> backend
-	handle /app/files* {
-		header {
-			Access-Control-Allow-Origin *
-			Access-Control-Allow-Methods "GET, OPTIONS"
-			Access-Control-Allow-Headers "*"
-		}
-		reverse_proxy backopensign.railway.internal:8080
-	}
-
-	# Everything else -> frontend
-	handle {
-		reverse_proxy fe-open-sign.railway.internal:8080
-	}
+  # Everything else -> frontend
+  handle {
+    reverse_proxy fe-open-sign.railway.internal:8080
+  }
 }
