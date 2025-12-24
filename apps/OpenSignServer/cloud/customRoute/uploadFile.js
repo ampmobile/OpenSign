@@ -44,10 +44,10 @@ async function uploadFile(req, res) {
       'xlx',
     ];
 
-    const DO_ENDPOINT = process.env.DO_ENDPOINT;
-    const DO_ACCESS_KEY_ID = process.env.DO_ACCESS_KEY_ID;
-    const DO_SECRET_ACCESS_KEY = process.env.DO_SECRET_ACCESS_KEY;
-    const DO_SPACE = process.env.DO_SPACE;
+const AWS_ACCESS_KEY_ID = process.env.AWS_ACCESS_KEY_ID;
+const AWS_SECRET_ACCESS_KEY = process.env.AWS_SECRET_ACCESS_KEY;
+const AWS_REGION = process.env.AWS_REGION;
+const AWS_BUCKET = process.env.AWS_BUCKET;
 
     const parseBaseUrl = cloudServerUrl; //process.env.SERVER_URL;
     const parseAppId = serverAppId;
@@ -73,33 +73,29 @@ async function uploadFile(req, res) {
       });
     } else {
       try {
-        const spacesEndpoint = new aws.Endpoint(DO_ENDPOINT);
-        const s3 = new aws.S3({
-          endpoint: spacesEndpoint,
-          accessKeyId: DO_ACCESS_KEY_ID,
-          secretAccessKey: DO_SECRET_ACCESS_KEY,
-          signatureVersion: 'v4',
-          region: process.env.DO_REGION,
-        });
-        fileStorage = multerS3({
-          acl: 'public-read',
-          s3,
-          bucket: DO_SPACE,
-          metadata: function (req, file, cb) {
-            cb(null, { fieldName: 'OPENSIGN_METADATA' });
-          },
-          key: function (req, file, cb) {
-            //console.log(file);
-            let filename = file.originalname;
-            let newFileName = filename.split('.')[0];
-            let extension = filename.split('.')[1];
-            newFileName = sanitizeFileName(
-              newFileName + '_' + new Date().toISOString() + '.' + extension
-            );
-            // console.log(newFileName);
-            cb(null, newFileName);
-          },
-        });
+    const s3 = new aws.S3({
+  accessKeyId: AWS_ACCESS_KEY_ID,
+  secretAccessKey: AWS_SECRET_ACCESS_KEY,
+  region: AWS_REGION,
+  signatureVersion: 'v4',
+});
+       fileStorage = multerS3({
+  s3,
+  bucket: AWS_BUCKET,
+  acl: 'public-read',
+  metadata: function (req, file, cb) {
+    cb(null, { fieldName: 'OPENSIGN_METADATA' });
+  },
+  key: function (req, file, cb) {
+    let filename = file.originalname;
+    let newFileName = filename.split('.')[0];
+    let extension = filename.split('.')[1];
+    newFileName = sanitizeFileName(
+      newFileName + '_' + new Date().toISOString() + '.' + extension
+    );
+    cb(null, newFileName);
+  },
+});
       } catch (err) {
         fileStorage = multer.diskStorage({
           destination: function (req, file, cb) {
