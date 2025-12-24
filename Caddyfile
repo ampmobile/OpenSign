@@ -9,6 +9,15 @@ handle_path /api/* {
     header_up X-Forwarded-Proto {scheme}
   }
 }
+  # Files/PDF -> backend (KEEP full path)
+  handle /app/files* {
+    header {
+      Access-Control-Allow-Origin "*"
+      Access-Control-Allow-Methods "GET, OPTIONS"
+      Access-Control-Allow-Headers "*"
+    }
+    reverse_proxy backopensign.railway.internal:8080
+  }
 
 
 
