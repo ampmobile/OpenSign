@@ -15,11 +15,9 @@ handle_path /api/* {
       Access-Control-Allow-Origin "*"
       Access-Control-Allow-Methods "GET, OPTIONS"
       Access-Control-Allow-Headers "*"
-    }
     reverse_proxy backopensign.railway.internal:8080
+    }
   }
-
-
 
   # Everything else -> frontend
   handle {
