@@ -1,19 +1,17 @@
 :{$PORT} {
 
-	# API -> backend
-	handle_path /api/app/* {
-		rewrite * /app{path}
+	# API -> backend (KEEP /api)
+	handle /api/* {
 		reverse_proxy backopensign.railway.internal:8080
 	}
 
-	# ✅ Parse file URLs often come out as /files/* (NOT /app/files/*)
-	handle_path /files/* {
-		rewrite * /app/files{path}
-		reverse_proxy backopensign.railway.internal:8080
-	}
-
-	# Files/PDF (direct)
+	# Files / PDFs -> backend
 	handle /app/files* {
+		header {
+			Access-Control-Allow-Origin *
+			Access-Control-Allow-Methods "GET, OPTIONS"
+			Access-Control-Allow-Headers "*"
+		}
 		reverse_proxy backopensign.railway.internal:8080
 	}
 
