@@ -1,14 +1,12 @@
 :{$PORT} {
 
-	# ========= API / Parse Server =========
-	# Frontend calls: /api/app/...
-	# Backend listens on: /app
-	handle_path /api/* {
+	# ✅ API -> backend (Parse mount is /app)
+	handle_path /api/app/* {
 		rewrite * /app{path}
 		reverse_proxy backopensign.railway.internal:8080
 	}
 
-	# ========= Files / PDFs =========
+	# ✅ Files/PDFs -> backend (keep full path)
 	handle /app/files* {
 		header {
 			Access-Control-Allow-Origin  *
@@ -18,7 +16,7 @@
 		reverse_proxy backopensign.railway.internal:8080
 	}
 
-	# ========= Frontend =========
+	# ✅ Everything else -> frontend
 	handle {
 		reverse_proxy fe-open-sign.railway.internal:8080
 	}
