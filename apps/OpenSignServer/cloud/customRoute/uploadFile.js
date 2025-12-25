@@ -82,7 +82,7 @@ async function uploadFile(req, res) {
           region: process.env.DO_REGION,
         });
         fileStorage = multerS3({
-          
+          acl: 'public-read',
           s3,
           bucket: DO_SPACE,
           metadata: function (req, file, cb) {
