@@ -3084,24 +3084,20 @@ export function removeBase64Prefix(base64String) {
 }
 
 export const convertBase64ToFile = async (pdfName, pdfBase64, imgType) => {
-  let base64Str = pdfBase64;
-  const mime = imgType && imgType?.split("/")?.pop();
-  let fileName =
-    fileNameWithUnderscore(pdfName) + (imgType ? `.${mime}` : ".pdf");
-  try {
-    fileName = imgType ? pdfName : fileName;
-    const pdfFile = new Parse.File(fileName, { base64: base64Str });
-    // Save the Parse File if needed
-    const pdfData = await pdfFile.save();
-    const pdfUrl = pdfData.url();
-    const fileRes = await getSecureUrl(pdfUrl);
-    if (fileRes?.url) {
-      return fileRes.url;
-    }
-  } catch (e) {
-    console.log("error in convertbase64tofile", e);
-  }
+  const mimeType = imgType || "application/pdf";
+  const mimeExt = imgType && imgType.split("/").pop();
+
+  let fileName = fileNameWithUnderscore(pdfName) + (imgType ? `.${mimeExt}` : ".pdf");
+  if (imgType) fileName = pdfName;
+
+  // IMPORTANT: Parse wants raw base64, not data:...;base64,
+  const cleanedBase64 = String(pdfBase64).replace(/^data:.*;base64,/, "");
+
+  const pdfFile = new Parse.File(fileName, { base64: cleanedBase64 }, mimeType);
+  const pdfData = await pdfFile.save();
+  return pdfData?.url?.() || pdfData?.url;
 };
+
 export const onClickZoomIn = (scale, zoomPercent, setScale, setZoomPercent) => {
   const newPercent = zoomPercent + 10;
   setZoomPercent(newPercent);
