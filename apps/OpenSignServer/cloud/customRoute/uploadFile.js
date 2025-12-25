@@ -11,23 +11,6 @@ function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-zA-Z0-9._-]/g, '');
 }
 
-function logAwsErr(err) {
-  if (!err) return;
-  console.log("S3_UPLOAD_ERROR", {
-    name: err.name,
-    code: err.code,
-    statusCode: err.statusCode,
-    message: err.message,
-    region: err.region,
-    time: err.time,
-    requestId: err.requestId,
-    extendedRequestId: err.extendedRequestId,
-    cfId: err.cfId,
-    retryable: err.retryable,
-    hostname: err.hostname,
-  });
-}
-
 async function uploadFile(req, res) {
   try {
     //--size extended to 100 mb
@@ -153,27 +136,14 @@ async function uploadFile(req, res) {
     }).single('file');
 
     //--call upload function--
-   upload(req, res, function (err) {
-  if (err) {
-    logAwsErr(err); // 👈 THIS is why we added the helper
-    return res.status(400).send({
-      status: "Error",
-      returnCode: 1029,
-      message: String(err.message || err),
-    });
-  }
-
-  const status = 'Success';
-
-  let fileUrl;
-  if (useLocal === 'true') {
-    fileUrl = `${parseBaseUrl}/files/${parseAppId}/${req.file.filename}`;
-  } else {
-    fileUrl = req.file.location;
-  }
-
-  return res.json({ status, imageUrl: fileUrl });
-});
+    upload(req, res, function (err, some) {
+      if (err) {
+        console.log(err);
+        const status = 'Error';
+        const message = err;
+        const returnCode = 1029;
+        return res.send({ status, returnCode, message });
+      }
 
       const status = 'Success';
       //res.header("Access-Control-Allow-Headers", "Content-Type");
