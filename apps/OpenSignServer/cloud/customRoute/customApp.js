@@ -8,6 +8,7 @@ import decryptpdf, { upload as decryptUpload } from './decryptpdf.js';
 import { deleteUserByAdmin, deleteUserPost } from './deleteAccount/deleteUser.js';
 import { deleteUserGet } from './deleteAccount/deleteUserGet.js';
 import { deleteUserOtp } from './deleteAccount/deleteUserOtp.js';
+import { handleApiKey } from './apikey.js';
 
 export const app = express();
 
@@ -23,3 +24,5 @@ app.get('/delete-account/:userId', deleteUserGet);
 app.post('/delete-account/:userId/otp', deleteUserOtp);
 app.post('/delete-account/:userId', deleteUserPost);
 app.post('/deleteuser/:userId', deleteUserByAdmin);
+// API Key generation endpoint
+app.post('/api/v1/apikey', handleApiKey);

@@ -651,17 +651,36 @@ const Preferences = () => {
                           className="op-btn op-btn-primary w-[200px]"
                           onClick={async () => {
                             try {
+                              const sessionToken = localStorage.getItem("accesstoken");
+                              if (!sessionToken) {
+                                alert('Error: Please log in first to generate an API token.');
+                                return;
+                              }
+
                               const response = await fetch('/api/v1/apikey', {
                                 method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
+                                headers: { 
+                                  'Content-Type': 'application/json',
+                                  'X-Parse-Session-Token': sessionToken
+                                },
                                 body: JSON.stringify({ action: 'generate' })
                               });
+
+                              if (!response.ok) {
+                                const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+                                throw new Error(errorData.message || `Server error: ${response.status}`);
+                              }
+
                               const data = await response.json();
-                              navigator.clipboard.writeText(data.token || 'freehost-token-123');
-                              alert(`API Token: ${data.token || 'freehost-token-123'}\nCopied to clipboard!`);
+                              if (data.token) {
+                                navigator.clipboard.writeText(data.token);
+                                alert(`API Token: ${data.token}\nCopied to clipboard!`);
+                              } else {
+                                throw new Error('No token received from server');
+                              }
                             } catch(e) {
-                              navigator.clipboard.writeText('freehost-token-123');
-                              alert('API Token: freehost-token-123\nCopied to clipboard!\n(Fallback token)');
+                              console.error('Error generating API token:', e);
+                              alert(`Error generating API token: ${e.message}\n\nPlease try again or contact support.`);
                             }
                           }}
                         >
