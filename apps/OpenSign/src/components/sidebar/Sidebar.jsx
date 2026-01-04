@@ -45,9 +45,13 @@ const Sidebar = () => {
         const newSidebarList = sidebarList.map((item) => {
           if (item.title !== "Settings") return item;
           const newItem = { ...item };
+          // FORCE SHOW ALL SETTINGS ITEMS - Always include My Signature, API Token, and Webhook
+          // Keep original Settings children (My Signature, API Token, Webhook)
+          const originalChildren = newItem.children || [];
+          // Add subSetting items (Preferences, Users) based on admin status
           const baseChildren = isAdmin ? subSetting : subSetting?.slice(0, 1);
-            const mysignature = newItem.children.slice(0, 1);
-            newItem.children = [...mysignature, ...baseChildren];
+          // Combine: original Settings items + subSetting items
+          newItem.children = [...originalChildren, ...baseChildren];
           return newItem;
         });
         setmenuList(newSidebarList);
