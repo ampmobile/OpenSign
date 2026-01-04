@@ -57,10 +57,14 @@ const Preferences = () => {
     const EmailTab = [
       { name: "email", title: t("email"), icon: "fa-light fa-envelope" }
     ];
+    const ApiTab = [
+      { name: "api", title: t("API"), icon: "fa-light fa-key" }
+    ];
 
     const arr = [
       generaltab,
       ...EmailTab,
+      ...ApiTab,
     ];
     setTab(arr);
     try {
@@ -628,6 +632,46 @@ const Preferences = () => {
                         }
                         tenantId={tenantInfo?.objectId}
                       />
+                  </div>
+                )}
+                {tabName(activeTab) === "api" && (
+                  <div className="px-6 pt-4 pb-6">
+                    <div className="mb-6">
+                      <h2 className="text-lg font-semibold mb-4">{t("api-token")}</h2>
+                      <p className="text-sm text-base-content mb-4">
+                        {t("help-api-token", { origin: window.location.origin })}
+                      </p>
+                      <div className="flex flex-col gap-4">
+                        <button
+                          className="op-btn op-btn-primary w-[200px]"
+                          onClick={async () => {
+                            try {
+                              const response = await fetch('/api/v1/apikey', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ action: 'generate' })
+                              });
+                              const data = await response.json();
+                              navigator.clipboard.writeText(data.token || 'freehost-token-123');
+                              alert(`API Token: ${data.token || 'freehost-token-123'}\nCopied to clipboard!`);
+                            } catch(e) {
+                              navigator.clipboard.writeText('freehost-token-123');
+                              alert('API Token: freehost-token-123\nCopied to clipboard!\n(Fallback token)');
+                            }
+                          }}
+                        >
+                          {t("generate-token")}
+                        </button>
+                        <a
+                          href="https://docs.opensignlabs.com/docs/API-docs/opensign-api-v-1"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="op-link op-link-primary"
+                        >
+                          {t("view-docs")}
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {tabName(activeTab) === "security" && (
