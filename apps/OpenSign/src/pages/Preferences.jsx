@@ -37,7 +37,18 @@ const Preferences = () => {
     title: t("general"),
     icon: "fa-light fa-gears"
   };
-  const [tab, setTab] = useState([generaltab]);
+  const EmailTab = [
+    { name: "email", title: t("email"), icon: "fa-light fa-envelope" }
+  ];
+  const ApiTab = [
+    { name: "api", title: t("API"), icon: "fa-light fa-key" }
+  ];
+  // FORCE SHOW API TAB - Always include all tabs
+  const [tab, setTab] = useState([
+    generaltab,
+    ...EmailTab,
+    ...ApiTab,
+  ]);
   const [sendinOrder, setSendinOrder] = useState(true);
   const [isTourEnabled, setIsTourEnabled] = useState(false);
   const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
@@ -54,13 +65,7 @@ const Preferences = () => {
 
   const fetchSignType = async () => {
     setIsTopLoader(true);
-    const EmailTab = [
-      { name: "email", title: t("email"), icon: "fa-light fa-envelope" }
-    ];
-    const ApiTab = [
-      { name: "api", title: t("API"), icon: "fa-light fa-key" }
-    ];
-
+    // Ensure tabs are always set (no conditions, no filters)
     const arr = [
       generaltab,
       ...EmailTab,
